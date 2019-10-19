@@ -1,51 +1,57 @@
 //GRAB THE INPUT VALUE
+document.querySelector(".js-go").addEventListener("click", function () {
 
-let button = document.querySelector(".js-go")
-button.addEventListener("click", function () {
   let input = document.querySelector("input").value;
-  console.log(input);
-  pushToDOM(input)
+  searchGif(input);
+
 });
 
 document.querySelector(".js-userinput").addEventListener('keyup', function (e) {
 
   var input = document.querySelector("input").value;
 
-
   // if the key ENTER is pressed...
   if (e.which === 13) {
-    pushToDOM(input);
+    searchGif(input);
+
   }
 
 });
 
-//API
 
-var url = "http://api.giphy.com/v1/gifs/search?q=funny+cat&api_key=BpKaq8bodOahwIS1A9sTHPlesY4EYCkb&limit=5";
+//Conneting to the API and searching the gif
+function searchGif(value) {
 
-// AJAX Request
-var GiphyAJAXCall = new XMLHttpRequest();
-GiphyAJAXCall.open('GET', url);
-GiphyAJAXCall.send();
+  var url = "http://api.giphy.com/v1/gifs/search?q=funny+" + value + "&api_key=BpKaq8bodOahwIS1A9sTHPlesY4EYCkb&limit=5";
+  console.log(url)
 
-GiphyAJAXCall.addEventListener('load', function (e) {
+  // AJAX Request
+  var GiphyAJAXCall = new XMLHttpRequest();
+  GiphyAJAXCall.open('GET', url);
+  GiphyAJAXCall.send();
 
-  var data = e.target.response;
-  pushToDOM(data);
-  //console.log(data);
+  GiphyAJAXCall.addEventListener('load', function (e) {
+    var data = e.target.response;
+    pushToDOM(data);
 
-});
+  });
+}
+
 
 //SHOWS THE GIF
 function pushToDOM(input) {
 
   var response = JSON.parse(input)
   var imageURL = response.data;
+  var container = document.querySelector(".js-container");
   console.log(imageURL)
+  if (container != null) {
+    container.innerHTML = "";
+  }
 
   imageURL.forEach(function (image) {
     var src = image.images.fixed_height.url;
-    var container = document.querySelector(".js-container");
+
     container.innerHTML += "<img src=\"" + src + "\">";
 
   });
